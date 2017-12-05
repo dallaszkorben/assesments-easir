@@ -1,0 +1,47 @@
+*Settings*							
+Documentation	Testing the Google Fligth page						
+...	Pre-requisits: Should be located in Linköping						
+Test Setup	Start Page						
+Test Teardown	Close Window						
+Library	Selenium2Library						
+Resource	Keys.tsv						
+Resource	Constants_res.tsv						
+Resource	Locators_res.tsv						
+							
+*Test Cases*							
+Test Existing Fields	#Ticket Type						
+	Element Should Be Shown	${dropdown_ticket_type}					
+	#Number of person						
+	Element Should Be Shown	${dropdown_person}					
+	#Seating Class						
+	Element Should Be Shown	${dropdown_seating_class}					
+	#Origin Airport						
+	Element Should Be Shown	${dropdown_origin_airport}					
+	#Destination Airport						
+	Element Should Be Shown	${dropdown_destination_airport}					
+	#Departure Date						
+	Element Should Be Shown	${dropdown_departure_date}					
+	#Return Date						
+	Element Should Be Shown	${dropdown_return_date}					
+							
+Test Containment	#Ticket Type						
+	Click Element	${dropdown_ticket_type}					
+	Element Should Be Shown	${dropdown_ticket_type_RoundTrip}					
+	Element Should Be Shown	${dropdown_ticket_type_One-way}					
+	Element Should Be Shown	${dropdown_ticket_type_Multi-city}					
+	Click Element	${dropdown_ticket_type}					
+	#Number of person						
+	#Click On Unclickable	${dropdown_person}					
+	Click Element	${dropdown_person}					
+	Element Should Be Shown	${dropdown_person_Adults}					
+	Element Should Be Shown	${dropdown_person_Children}					
+	Element Should Be Shown	${dropdown_person_InfantsInSeat}					
+	Element Should Be Shown	${dropdown_person_InfantsOnLap}					
+	Click Element	${dropdown_person_Cancel}					
+	#Seating Class						
+	Click On Unclickable	${dropdown_seating_class}					
+	Element Should Be Shown	${dropdown_seating_class_Economy}					
+	Element Should Be Shown	${dropdown_seating_class_PremiumEconomy}					
+	Element Should Be Shown	${dropdown_seating_class_Business}					
+	Element Should Be Shown	${dropdown_seating_class_FirstClass}					
+	Click On Unclickable	${dropdown_seating_class}					
