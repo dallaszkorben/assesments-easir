@@ -1,0 +1,105 @@
+*Settings*							
+Documentation	Testing the Google Fligth page						
+...	Pre-requisits: Should be located in Linköping						
+Suite Setup	Start Page						
+Suite Teardown	Close Window						
+Force Tags	dynamic						
+Library	Selenium2Library						
+Library	DateTime						
+Resource	Keys.tsv						
+Resource	Constants_res.tsv						
+Resource	Locators_res.tsv						
+							
+*Test Cases*							
+Scenario-01: Having Best/Other Flight Sections	[Tags]	best-other					
+	Given Default Homepage is Open						
+	And The Language is English						
+	When Select Flights for 2 Person to Prague						
+	Then Best Flights And Other Flights Sections Are Visible						
+							
+Scenario-02: Having Best Flight Itinerary	[Tags]	best-flight-itinerary					
+	Given Default Homepage is Open						
+	And The Language is English						
+	And Select Flights for 2 Person to Prague						
+	When Expand the First Best Flight						
+	Then Itinetary is Visible						
+							
+Scenario-03: Getting Return Flights Options	[Tags]	return-options					
+	Given Default Homepage is Open						
+	And The Language is English						
+	And Select Flights for 2 Person to Prague						
+	And Expand The First Best Flight						
+	When Select the First Best Flight						
+	Then Best-Other Return Flights are Visible						
+							
+Scenario-04: Getting Final Travel Itinerary	[Tags]	final-itinerary					
+	Given Default Homepage is Open						
+	And The Language is English						
+	And Select Flights for 2 Person to Prague						
+	And Expand The First Best Flight						
+	And Select the First Best Flight						
+	When Select the First Return Best Flight						
+	Then Departing and Returning Itineraries are Visible						
+							
+*Keywords*							
+Select Flights for 2 Person To Prague	Click On Clickable	${dropdown_person}					
+	Click On Unclickable	${dropdown_person_plus_adult}					
+	sleep	1s					
+	Click On Clickable	${dropdown_person_Done}					
+	#Calculate Dates						
+	${CurrentDate}	Get Current Date	result_format=%Y %m %d				
+	${DepartureDate}=	Add Time To Date	${CurrentDate}	${Month}	result_format=%Y %m %d		
+	${DepartureDateToField}=	Convert Date	${DepartureDate}	result_format=%b %d			
+	${ReturnDateToField}=	Add Time To Date	${DepartureDate}	${2Weeks}	result_format=%b %d		
+	#Set Departure date						
+	Click On Unclickable	${dropdown_departure_date}					
+	Send String	${dropdown_departure_date_input_field}	${DepartureDateToField}				
+	Send Key	${dropdown_departure_date_input_field}	\\13				
+	Click On Unclickable	${dropdown_date_Done}					
+	#Set Return date						
+	Click On Unclickable	${dropdown_return_date}					
+	Send String	${dropdown_return_date_input_field}	${ReturnDateToField}				
+	Send Key	${dropdown_return_date_input_field}	\\13				
+	Click On Unclickable	${dropdown_date_Done}					
+	#Select Destination						
+	Click On Unclickable	${dropdown_destination_airport_to_choose}					
+	Send String	${dropdown_destination_airport_input_field}	${SELECTED_DESTINATION}				
+	Send Key	${dropdown_destination_airport_input_field}	\\13				
+	#Search						
+	Click On Unclickable	${search_button}					
+							
+Best Flights And Other Flights Sections Are Visible	#Check Best Section						
+	Element Should Be Shown	${best_section}					
+	${count}=	Get matching xpath count	${best_section}/li				
+	Run Keyword If	'${count}' == '0'	Fail	"""Cant found flights in Best Section"			
+	#Check Other Section						
+	Element Should Be Shown	${other_section}					
+	${count}=	Get matching xpath count	${other_section}/li				
+	Run Keyword If	'${count}' == '0'	Fail	"""Cant found flights in Other Section"			
+							
+Expand the First Best Flight	Click On Unclickable	${best_section}${best_section_01_expaner}					
+							
+Itinetary is Visible	Element Should Be Shown	${best_section}${best_section_01_card_expanded}					
+							
+Select the First Best Flight	Click On Unclickable	${best_section}${best_section_01_card_expanded_select_button}					
+							
+Best-Other Return Flights are Visible	#Check the heaer						
+	Element Should Be Shown	${header_return_flights}					
+	#Check the number of the Best Return Flights						
+	#sleep	2s					
+	Element Should Be Shown	${return_best_section}/li					
+	${count}=	Get matching xpath count	${return_best_section}/li				
+	Run Keyword If	'${count}' == '0'	Fail	"""Cant found flights in Best Return Flights"""			
+	#Check the number of the Best Return Flights						
+	${count}=	Get matching xpath count	${return_other_section} /li				
+	Run Keyword If	'${count}' == '0'	Fail	"""Cant found flights in Best Return Flights"""			
+							
+Select the First Return Best Flight	Click On Unclickable	${return_best_section}${return_best_section_01_expander}					
+	Click On Unclickable	${return_best_section}${return_best_section_01_expanded_select_button}					
+							
+Departing and Returning Itineraries are Visible	#Check the header						
+	Element Should Be Shown	${header_trip_summary}					
+	#Check the exsistence of departing flight Itinerary						
+	Element Should Be Shown	${departure_flight_card}					
+	#Check the exsistence of returng flight Itinerary						
+	Element Should Be Shown	${return_flight_card}					

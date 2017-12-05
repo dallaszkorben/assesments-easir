@@ -3,28 +3,37 @@
 *Keywords*							
 Start Page	Open Browser	${START_URL}	${BROWSER}				
 	Maximize Browser Window						
-	#Select English Language						
-	Click Element	${dropdown_language_selector}					
+							
+Default Homepage is Open	Go To	${START_URL}					
+							
+The Language is English	Click Element	${dropdown_language_selector}					
 	Click On Unclickable	${dropdown_language_selector_english}					
 							
 Close Window	Close Browser						
 							
 Click On Unclickable	[Arguments]	${path}					
-	Wait Until Element Is Visible	${path}					
+	Wait Until Page Contains Element	${path}	timeout=10				
+	Wait Until Element Is Visible	${path}	timeout=10				
 	Execute Javascript	document.evaluate('${path}', document, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null).iterateNext().click();					
 							
 Click On Clickable	[Arguments]	${path}					
-	Page Should Contain Element	${path}					
-	Wait Until Element Is Visible	${path}					
-	Wait Until Element Is Enabled	${path}					
+	Wait Until Page Contains Element	${path}	timeout=10				
+	Wait Until Element Is Visible	${path}	timeout=10				
+	Wait Until Element Is Enabled	${path}	timeout=10				
 	Wait Until Keyword Succeeds	10 sec	1 sec	Click Element	${path}		
 							
 Element Should Be Shown	[Arguments]	${path}					
 	#Page Should Contain Element	${path}					
+	Wait Until Page Contains Element	${path}	timeout=10				
 	Wait Until Element Is Visible	${path}	timeout=10				
 							
 Send String	[Arguments]	${path}	${string}				
+	sleep	1s					
 	Wait Until Page Contains Element	${path}	timeout=10				
 	Wait Until Element Is Visible	${path}	timeout=10				
 	Wait Until Element Is Enabled	${path}	timeout=10				
-	Input Text	${path}	${string}				
+	Wait Until Keyword Succeeds	10 sec	1 sec	Input Text	${path}	${string}	
+							
+Send Key	[Arguments]	${path}	${key}				
+	sleep	1s					
+	Press Key	${path}	${key}				

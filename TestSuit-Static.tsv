@@ -3,14 +3,29 @@ Documentation	Testing the Google Fligth page
 ...	Pre-requisits: Should be located in Linköping						
 Suite Setup	Start Page						
 Suite Teardown	Close Window						
-Force Tags	validation						
+Force Tags	Static						
 Library	Selenium2Library						
 Resource	Keys.tsv						
 Resource	Constants_res.tsv						
 Resource	Locators_res.tsv						
 							
 *Test Cases*							
-Test Existing Fields	[Tags]	existing					
+Scenario-01: Test Existing Fields	Given Default Homepage is Open						
+	And The Language is English						
+	Then Primary and Secondary Inputs are Visible						
+							
+Scenario-02: Test Containment	Given Default Homepage is Open						
+	And The Language is English						
+	Then Ticket Type Contains List						
+	And Number of Person Contains List						
+	And Seating Class Contains List						
+							
+Scenario-03: Test Default Values	Given Default Homepage is Open						
+	And The Language is English						
+	Then Default Origin Airport is Visible						
+							
+*Keywords*							
+Primary and Secondary Inputs are Visible	[Tags]	existing					
 	#Ticket Type						
 	Element Should Be Shown	${dropdown_ticket_type}					
 	#Number of person						
@@ -26,14 +41,14 @@ Test Existing Fields	[Tags]	existing
 	#Return Date						
 	Element Should Be Shown	${dropdown_return_date}					
 							
-Test Containment	[Tags]	containment					
-	#Ticket Type						
+Ticket Type Contains List	#Ticket Type						
 	Click Element	${dropdown_ticket_type}					
 	Element Should Be Shown	${dropdown_ticket_type_RoundTrip}					
 	Element Should Be Shown	${dropdown_ticket_type_One-way}					
 	Element Should Be Shown	${dropdown_ticket_type_Multi-city}					
 	Click Element	${dropdown_ticket_type}					
-	#Number of person						
+							
+Number of Person Contains List	#Number of person						
 	#Click On Unclickable	${dropdown_person}					
 	Click Element	${dropdown_person}					
 	Element Should Be Shown	${dropdown_person_Adults}					
@@ -41,7 +56,8 @@ Test Containment	[Tags]	containment
 	Element Should Be Shown	${dropdown_person_InfantsInSeat}					
 	Element Should Be Shown	${dropdown_person_InfantsOnLap}					
 	Click Element	${dropdown_person_Cancel}					
-	#Seating Class						
+							
+Seating Class Contains List	#Seating Class						
 	Click On Unclickable	${dropdown_seating_class}					
 	Element Should Be Shown	${dropdown_seating_class_Economy}					
 	Element Should Be Shown	${dropdown_seating_class_PremiumEconomy}					
@@ -49,8 +65,6 @@ Test Containment	[Tags]	containment
 	Element Should Be Shown	${dropdown_seating_class_FirstClass}					
 	Click On Unclickable	${dropdown_seating_class}					
 							
-Test Default Values	[Tags]	default					
-	#Origin Airport						
+Default Origin Airport is Visible	#Origin Airport						
 	${OriginAirport}=	Get Text	${dropdown_origin_airport_selected}				
 	Should Be Equal	${OriginAirport}	${DEFAULT_ORIGIN}				
-	#Element Should Be Shown	${dropdown_ticket_type}					
