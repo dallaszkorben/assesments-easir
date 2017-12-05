@@ -1,8 +1,10 @@
 *Settings*							
 							
 *Variables*							
-${URL}	https://www.google.com/flights/beta						
+${START_URL}	https://www.google.com/flights/beta						
 ${BROWSER}	chrome						
 ${DEFAULT_ORIGIN}	Linköping						
 ${SELECTED_ORIGIN}	London						
-${SELECTED_DESTINATION}	Amsterdam						
+${SELECTED_DESTINATION}	Prague						
+${Month}	30 days						
+${2Weeks}	14 days						

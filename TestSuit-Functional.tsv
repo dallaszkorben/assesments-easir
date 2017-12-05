@@ -1,47 +1,106 @@
 *Settings*							
 Documentation	Testing the Google Fligth page						
 ...	Pre-requisits: Should be located in Linköping						
-Test Setup	Start Page						
-Test Teardown	Close Window						
+Suite Setup	Start Page						
+Suite Teardown	Close Window						
 Library	Selenium2Library						
+Library	DateTime						
 Resource	Keys.tsv						
 Resource	Constants_res.tsv						
 Resource	Locators_res.tsv						
 							
 *Test Cases*							
-Test Existing Fields	#Ticket Type						
-	Element Should Be Shown	${dropdown_ticket_type}					
-	#Number of person						
-	Element Should Be Shown	${dropdown_person}					
-	#Seating Class						
-	Element Should Be Shown	${dropdown_seating_class}					
-	#Origin Airport						
-	Element Should Be Shown	${dropdown_origin_airport}					
-	#Destination Airport						
-	Element Should Be Shown	${dropdown_destination_airport}					
-	#Departure Date						
-	Element Should Be Shown	${dropdown_departure_date}					
-	#Return Date						
-	Element Should Be Shown	${dropdown_return_date}					
+Scenario-01: Having Best/Other Flight Sections	[Tags]	best-other					
+	Given Default Homepage is Open						
+	And The Language is English						
+	When Select Flights for 2 Person to Prague						
+	Then Best Flights And Other Flights Sections Are Visible						
 							
-Test Containment	#Ticket Type						
-	Click Element	${dropdown_ticket_type}					
-	Element Should Be Shown	${dropdown_ticket_type_RoundTrip}					
-	Element Should Be Shown	${dropdown_ticket_type_One-way}					
-	Element Should Be Shown	${dropdown_ticket_type_Multi-city}					
-	Click Element	${dropdown_ticket_type}					
-	#Number of person						
-	#Click On Unclickable	${dropdown_person}					
-	Click Element	${dropdown_person}					
-	Element Should Be Shown	${dropdown_person_Adults}					
-	Element Should Be Shown	${dropdown_person_Children}					
-	Element Should Be Shown	${dropdown_person_InfantsInSeat}					
-	Element Should Be Shown	${dropdown_person_InfantsOnLap}					
-	Click Element	${dropdown_person_Cancel}					
-	#Seating Class						
-	Click On Unclickable	${dropdown_seating_class}					
-	Element Should Be Shown	${dropdown_seating_class_Economy}					
-	Element Should Be Shown	${dropdown_seating_class_PremiumEconomy}					
-	Element Should Be Shown	${dropdown_seating_class_Business}					
-	Element Should Be Shown	${dropdown_seating_class_FirstClass}					
-	Click On Unclickable	${dropdown_seating_class}					
+Scenario-02: Best Flight Itinerary	[Tags]	best-other					
+	Given Default Homepage is Open						
+	And The Language is English						
+	And Select Flights for 2 Person to Prague						
+	When Expand the First Best Flight						
+	Then Itinetary is Visible						
+							
+Test Best-Other Flights Sections	#Get to the Start Page						
+	#Select 2 adults						
+	Click On Clickable	${dropdown_person}					
+	Click On Unclickable	${dropdown_person_plus_adult}					
+	Click On Unclickable	${dropdown_person_Done}					
+	#Calculate Dates						
+	${CurrentDate}	Get Current Date	result_format=%Y %m %d				
+	${DepartureDate}=	Add Time To Date	${CurrentDate}	${Month}	result_format=%Y %m %d		
+	${DepartureDateToField}=	Convert Date	${DepartureDate}	result_format=%b %d			
+	${ReturnDateToField}=	Add Time To Date	${DepartureDate}	${2Weeks}	result_format=%b %d		
+	#Set Departure date						
+	Click On Unclickable	${dropdown_departure_date}					
+	Send String	${dropdown_departure_date_input_field}	${DepartureDateToField}				
+	Click On Unclickable	${dropdown_date_Done}					
+	#Set Return date						
+	Click On Unclickable	${dropdown_return_date}					
+	Send String	${dropdown_return_date_input_field}	${ReturnDateToField}				
+	Click On Unclickable	${dropdown_date_Done}					
+	#Select Destination						
+	Click On Unclickable	${dropdown_destination_airport_to_choose}					
+	#sleep	10s					
+	Send String	${dropdown_destination_airport_input_field}	${SELECTED_DESTINATION}				
+	Press Key	${dropdown_destination_airport_input_field}	\\13				
+	#Search						
+	Click On Unclickable	${search_button}					
+	#Check Best Section						
+	Element Should Be Shown	${best_section}					
+	${count}=	Get matching xpath count	${best_section}/li				
+	Run Keyword If	'${count}' == '0'	Fail	"""Cant found flights in Best Section"			
+	#Check Other Section						
+	Element Should Be Shown	${other_section}					
+	${count}=	Get matching xpath count	${other_section}/li				
+	Run Keyword If	'${count}' == '0'	Fail	"""Cant found flights in Other Section"			
+							
+Test Best Flights Itinerary	Given browser is opened to login page						
+	"When user ""h.wach"" logs in with password ""Anfang5!"""						
+	Then xyz page should be open						
+	[Teardown]	Clear SUT To Initial State					
+							
+*Keywords*							
+Default Homepage is Open	Go To	${START_URL}					
+							
+The Language is English	Click Element	${dropdown_language_selector}					
+	Click On Unclickable	${dropdown_language_selector_english}					
+							
+Select Flights for 2 Person To Prague	Click On Clickable	${dropdown_person}					
+	Click On Unclickable	${dropdown_person_plus_adult}					
+	Click On Unclickable	${dropdown_person_Done}					
+	#Calculate Dates						
+	${CurrentDate}	Get Current Date	result_format=%Y %m %d				
+	${DepartureDate}=	Add Time To Date	${CurrentDate}	${Month}	result_format=%Y %m %d		
+	${DepartureDateToField}=	Convert Date	${DepartureDate}	result_format=%b %d			
+	${ReturnDateToField}=	Add Time To Date	${DepartureDate}	${2Weeks}	result_format=%b %d		
+	#Set Departure date						
+	Click On Unclickable	${dropdown_departure_date}					
+	Send String	${dropdown_departure_date_input_field}	${DepartureDateToField}				
+	Click On Unclickable	${dropdown_date_Done}					
+	#Set Return date						
+	Click On Unclickable	${dropdown_return_date}					
+	Send String	${dropdown_return_date_input_field}	${ReturnDateToField}				
+	Click On Unclickable	${dropdown_date_Done}					
+	#Select Destination						
+	Click On Unclickable	${dropdown_destination_airport_to_choose}					
+	#sleep	10s					
+	Send String	${dropdown_destination_airport_input_field}	${SELECTED_DESTINATION}				
+	Press Key	${dropdown_destination_airport_input_field}	\\13				
+	#Search						
+	Click On Unclickable	${search_button}					
+							
+Best Flights And Other Flights Sections Are Visible	#Check Best Section						
+	Element Should Be Shown	${best_section}					
+	${count}=	Get matching xpath count	${best_section}/li				
+	Run Keyword If	'${count}' == '0'	Fail	"""Cant found flights in Best Section"			
+	#Check Other Section						
+	Element Should Be Shown	${other_section}					
+	${count}=	Get matching xpath count	${other_section}/li				
+	Run Keyword If	'${count}' == '0'	Fail	"""Cant found flights in Other Section"			
+							
+Expand the First Best Flight	Click On Unclickable	${best_section}${best_section_added_01_expaner}					
+							
+Itinetary is Visible	Element Should Be Shown	${best_section}${best_section_added_01_card_expanded}					
